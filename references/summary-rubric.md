@@ -13,6 +13,7 @@ Turn the latest `freshNews.md` into a short but useful Chinese briefing that hel
 Score items higher when they involve:
 
 - war, ceasefire, military action, sanctions, diplomacy
+- strategic geopolitical developments: export controls, maritime chokepoints, cross-border security shifts, alliance changes
 - central government, ministry, regulator, court, or policy actions
 - major market impact: oil, FX, rates, commodities, supply chains
 - major company events: CEO changes, lawsuits, shutdowns, restructurings
@@ -24,6 +25,7 @@ Treat these as especially sensitive:
 
 - armed conflict and escalation
 - China / US / Middle East / Taiwan related developments
+- sanctions, export controls, maritime chokepoints, and strategic infrastructure disputes
 - public safety or casualty events
 - export controls, bans, or regulatory crackdowns
 - strategic infrastructure, chips, AI infrastructure, energy chokepoints
@@ -46,12 +48,14 @@ Treat these as especially sensitive:
 - Do not include rationale labels such as `为什么重要`.
 - Do not include “no update” filler such as “AI 没有新增信号” or “未检出某人推文”.
 - Do not foreground source labels like `Reuters World` or `Sina · China News` in the briefing body unless source identity itself is material.
-- Default to 4 sections:
+- Default to 5 sections:
   - `当前关注`
+  - `地缘政治`
   - `市场`
   - `科技`
   - `其余简报`
 - Treat sensitivity as a ranking signal inside `当前关注`; do not force a separate `敏感信号` section unless the user asks for one.
+- If geopolitics is weak in the current file, compress or omit the `地缘政治` section instead of writing absence statements.
 
 ## Tech Priority
 

@@ -52,6 +52,7 @@ python3 /Users/x/.codex/skills/news-briefing/scripts/parse_freshnews.py --file "
   - fewer causal digressions
   - more direct newsroom-style wording
 - If a topic bucket has no substantive items, omit it quietly instead of writing that nothing happened.
+- Pay explicit attention to geopolitical developments, especially wars, ceasefires, sanctions, diplomacy, export controls, and strategic chokepoints.
 - Pay explicit attention to frontier tech topics, especially:
   - AI
   - Apple
@@ -68,6 +69,9 @@ Use this structure unless the user asks for another format:
 ## 当前关注
 - 对当前时段内最重要、最敏感、最值得先看的新闻做 3-5 条综合概括
 
+## 地缘政治
+- 战争、停火、军事行动、制裁、外交、出口管制、台海/中东/中美动向，以及能源通道、关键供应链与战略基础设施风险
+
 ## 市场
 - 宏观、资产价格、油运、汇率、商品、企业交易与市场风险
 
@@ -79,13 +83,16 @@ Use this structure unless the user asks for another format:
 ```
 
 - `当前关注` 不是“今日总结”，而是“这一个 freshNews 时间窗口里最值得先看什么”。
-- 如果本轮文件里市场或科技不构成独立板块，可以省略对应区块，直接并入 `其余简报`。
+- 地缘类新闻若属于本轮最值得先看的高优先级事项，可进入 `当前关注`；其余可归入 `地缘政治`。
+- 如果本轮文件里地缘政治、市场或科技不构成独立板块，可以省略对应区块，直接并入 `当前关注` 或 `其余简报`。
 - 如果 `郭明錤` 有推文，优先并入 `科技`，必要时可提升到 `当前关注`。
 - 只写“发生了什么”。不要写“没有发生什么”、不要写“本轮未检出”、不要为了凑板块去补说明性空话。
 
 ## Interpretation Guidance
 
 - Treat war, sanctions, diplomacy, regulation, macro shocks, public safety, and major corporate leadership/legal events as higher sensitivity.
+- Put war, ceasefire, military action, sanctions, diplomacy, export controls, cross-strait developments, Middle East tensions, maritime chokepoint risks, and strategic infrastructure disputes under `地缘政治` unless they are more urgent as `当前关注`.
+- Do not put ordinary elections, cabinet reshuffles, party politics, or domestic legislative maneuvering under `地缘政治` unless they materially affect international alignment, security, or cross-border policy.
 - If several items describe the same event from different sources, synthesize once and mention that multiple sources echoed it.
 - Write in briefing language, not commentary language.
 - Prefer concrete event summaries over source-by-source recitation.

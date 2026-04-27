@@ -107,14 +107,11 @@ python3 scripts/parse_freshnews.py --file "<freshnews-path>"
 YYYY-MM-DD-HH-mm_freshNews.md
 ```
 
-`daily` 模式兼容：
+`daily` 模式查找：
 
 ```text
 dailyFreshNews_YYYY-MM-DD.md
-YYYY-MM-DD_dailyFreshNews.md
 ```
-
-若同日新旧命名同时存在，优先新命名。
 
 ## 相关文件
 

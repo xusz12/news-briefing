@@ -1,6 +1,6 @@
 ---
 name: news-briefing
-description: Read the latest freshNews or dailyFreshNews file in NewsOfCodex (or a user-provided directory), parse it into structured sections/items, and produce a not-too-long Chinese briefing that prioritizes importance and sensitivity without flattening everything into a timeline. Use --mode fresh (default) for current-period briefings, or --mode daily for same-day cumulative briefings. Supports both new (dailyFreshNews_YYYY-MM-DD.md) and legacy (YYYY-MM-DD_dailyFreshNews.md) naming. Use --file to bypass the finder and read a specific file directly.
+description: Read the latest freshNews or dailyFreshNews file in NewsOfCodex (or a user-provided directory), parse it into structured sections/items, and produce a not-too-long Chinese briefing that prioritizes importance and sensitivity without flattening everything into a timeline. Use --mode fresh (default) for current-period briefings, or --mode daily for same-day cumulative briefings. `daily` uses `dailyFreshNews_YYYY-MM-DD.md`. Use --file to bypass the finder and read a specific file directly.
 ---
 
 # News Briefing
@@ -20,8 +20,6 @@ python3 /Users/x/.codex/skills/news-briefing/scripts/find_latest_freshnews.py --
 
 - `--mode fresh`（默认）：查找最新 `YYYY-MM-DD-HH-mm_freshNews.md`（当前时段快讯）
 - `--mode daily`：查找最新 `dailyFreshNews_YYYY-MM-DD.md`（当日累计）
-  - 同时兼容旧命名 `YYYY-MM-DD_dailyFreshNews.md`
-  - 同日新旧并存时，优先新命名
 - 若直接传入 `--file <path>`，则跳过 finder，直接使用该文件
 - finder payload 现在还会返回：
   - `mode`

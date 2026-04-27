@@ -23,6 +23,11 @@ python3 /Users/x/.codex/skills/news-briefing/scripts/find_latest_freshnews.py --
   - 同时兼容旧命名 `YYYY-MM-DD_dailyFreshNews.md`
   - 同日新旧并存时，优先新命名
 - 若直接传入 `--file <path>`，则跳过 finder，直接使用该文件
+- finder payload 现在还会返回：
+  - `mode`
+  - `file_name`
+  - `execution_time`：本地 `Asia/Shanghai` 时间，格式固定为 `M月D日 H:mm`
+  - `execution_timezone`
 
 3. Parse the Markdown into structured JSON.
 
@@ -36,6 +41,23 @@ python3 /Users/x/.codex/skills/news-briefing/scripts/parse_freshnews.py --file "
 
 ## Output Rules
 
+- All outputs must begin with this fixed header block before any news body:
+
+```markdown
+## 简报信息
+- 执行模式：`fresh`
+- 使用文件：`2026-04-27-00-00_freshNews.md`
+- 执行时间：`4月27日 0:39`
+```
+
+- Header field rules:
+  - `执行模式` must be `fresh`, `daily`, or `file`
+  - `使用文件` must be file name only, never the full path
+  - if there is no actual file name because the user pasted content inline, `使用文件` must be `inline-content`
+  - `执行时间` must use local `Asia/Shanghai` time in `M月D日 H:mm`
+- Use finder-provided `mode`, `file_name`, and `execution_time` when available.
+- Fallback rule: if the user directly provides a file without finder payload, set `执行模式` to `file`, use the provided file name, and generate `执行时间` from the current local `Asia/Shanghai` time.
+- Pasted-content fallback: if the user only pastes content and no file name is available, set `执行模式` to `file`, set `使用文件` to `inline-content`, and generate `执行时间` from the current local `Asia/Shanghai` time.
 - Ground the summary in parsed `title`, `time`, `url`, `section`, and optional quoted text only.
 - Do not invent facts that are not supported by the file.
 - Prefer merging duplicate or closely related items across sections into one higher-level point.
@@ -66,6 +88,11 @@ python3 /Users/x/.codex/skills/news-briefing/scripts/parse_freshnews.py --file "
 Use this structure unless the user asks for another format:
 
 ```markdown
+## 简报信息
+- 执行模式：`fresh`
+- 使用文件：`2026-04-27-00-00_freshNews.md`
+- 执行时间：`4月27日 0:39`
+
 ## 当前关注
 - 对当前时段内最重要、最敏感、最值得先看的新闻做 3-5 条综合概括
 
@@ -82,6 +109,7 @@ Use this structure unless the user asks for another format:
 - ...
 ```
 
+- The fixed header is mandatory and must appear before `## 当前关注`.
 - `当前关注` 不是“今日总结”，而是“这一个 freshNews 时间窗口里最值得先看什么”。
 - 地缘类新闻若属于本轮最值得先看的高优先级事项，可进入 `当前关注`；其余可归入 `地缘政治`。
 - 如果本轮文件里地缘政治、市场或科技不构成独立板块，可以省略对应区块，直接并入 `当前关注` 或 `其余简报`。

@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 import argparse
+from datetime import datetime
 import json
 import re
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 
 # Pattern definitions
 FRESHNESS_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}-\d{2}-\d{2}_freshNews\.md$")
 DAILY_NEW_PATTERN = re.compile(r"^dailyFreshNews_(\d{4}-\d{2}-\d{2})\.md$")
 DAILY_OLD_PATTERN = re.compile(r"^(\d{4}-\d{2}-\d{2})_dailyFreshNews\.md$")
+LOCAL_TIMEZONE = "Asia/Shanghai"
 
 
 def parse_daily_date(path: Path, pattern: re.Pattern) -> str | None:
@@ -53,6 +56,18 @@ def find_latest(directory: Path, mode: str = "fresh") -> Path:
     return daily_paths[0]
 
 
+def build_payload(path: Path, mode: str) -> dict[str, str]:
+    now = datetime.now(ZoneInfo(LOCAL_TIMEZONE))
+    return {
+        "directory": str(path.parent),
+        "file_name": path.name,
+        "path": str(path),
+        "mode": mode,
+        "execution_time": f"{now.month}月{now.day}日 {now.hour}:{now.minute:02d}",
+        "execution_timezone": LOCAL_TIMEZONE,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dir", required=True, help="Directory containing freshNews or dailyFreshNews files")
@@ -72,21 +87,11 @@ def main() -> None:
         path = Path(args.file).expanduser()
         if not path.exists():
             raise FileNotFoundError(f"file not found: {path}")
-        payload = {
-            "directory": str(path.parent),
-            "file_name": path.name,
-            "path": str(path),
-            "mode": "file",
-        }
+        payload = build_payload(path, "file")
     else:
         directory = Path(args.dir).expanduser()
         latest = find_latest(directory, args.mode)
-        payload = {
-            "directory": str(directory),
-            "file_name": latest.name,
-            "path": str(latest),
-            "mode": args.mode,
-        }
+        payload = build_payload(latest, args.mode)
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 

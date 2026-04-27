@@ -8,10 +8,10 @@
 
 - 自动定位最新新闻文件
 - 兼容 `fresh` 与 `daily` 两种模式
-- 支持新旧两种 `dailyFreshNews` 文件命名
 - 将 Markdown 解析为结构化 JSON
 - 生成更偏“简报”而不是“长文分析”的中文摘要
 - 在正文前强制输出固定头部信息
+- 支持两种最终输出模式：`fileout`（默认）与 `chat`
 - 对 AI、Apple、半导体、基础设施和 `郭明錤` 相关内容做显式关注
 
 ## 目录结构
@@ -19,6 +19,7 @@
 - `SKILL.md`：skill 定义、工作流与输出规则
 - `scripts/find_latest_freshnews.py`：查找最新新闻文件
 - `scripts/parse_freshnews.py`：解析新闻 Markdown
+- `scripts/write_briefing_file.py`：将完整简报写入固定 Markdown 文件
 - `references/summary-rubric.md`：摘要写作 rubric
 - `agents/openai.yaml`：agent 界面配置
 
@@ -58,6 +59,12 @@ python3 scripts/find_latest_freshnews.py --dir "<news-dir>" --file "<freshnews-p
 python3 scripts/parse_freshnews.py --file "<freshnews-path>"
 ```
 
+写入固定输出文件：
+
+```bash
+printf 'briefing body\n' | python3 scripts/write_briefing_file.py
+```
+
 ## 推荐工作流
 
 1. 先定位最新 `freshNews` 或 `dailyFreshNews` 文件
@@ -72,12 +79,14 @@ python3 scripts/parse_freshnews.py --file "<freshnews-path>"
 ```md
 ## 简报信息
 - 执行模式：`fresh`
+- 输出模式：`fileout`
 - 使用文件：`2026-04-27-00-00_freshNews.md`
 - 执行时间：`4月27日 0:39`
 ```
 
 字段说明：
-- `执行模式`：`fresh` / `daily` / `file`
+- `执行模式`：`fresh` / `daily` / `filein`
+- `输出模式`：`fileout` / `chat`
 - `使用文件`：只写文件名，不写完整路径
 - 如果用户只是直接粘贴内容、没有文件名，`使用文件` 固定写 `inline-content`
 - `执行时间`：生成这份简报时的本地时间，时区固定 `Asia/Shanghai`，格式固定 `M月D日 H:mm`
@@ -86,6 +95,21 @@ python3 scripts/parse_freshnews.py --file "<freshnews-path>"
 - `执行时间` 不是新闻发布时间
 - `执行时间` 不是源文件名里的时间片段
 - 正文区块仍从 `## 当前关注` 开始，不改原来的摘要结构
+
+## 输出模式
+
+默认输出模式是 `fileout`：
+
+- 完整 Markdown 写入：
+  `/Users/x/Library/Mobile Documents/iCloud~md~obsidian/Documents/Mind/NewsOfCodex/news_briefing/NewsBriefing.md`
+- 目录不存在时自动创建
+- 每次执行覆盖旧的 `NewsBriefing.md`
+- 聊天里只返回简短写入回执
+
+如果用户明确要求“聊天输出 / 直接输出 / 不写文件”，则使用 `chat`：
+
+- 不写文件
+- 直接在聊天中输出完整 Markdown 简报
 
 ## 输出风格
 

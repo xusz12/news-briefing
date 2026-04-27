@@ -19,7 +19,7 @@ def parse_daily_date(path: Path, pattern: re.Pattern) -> str | None:
 
 
 def find_latest(directory: Path, mode: str = "fresh") -> Path:
-    if mode == "file":
+    if mode == "filein":
         raise ValueError("use --file to specify a concrete path")
 
     candidates = []
@@ -76,7 +76,7 @@ def main() -> None:
         path = Path(args.file).expanduser()
         if not path.exists():
             raise FileNotFoundError(f"file not found: {path}")
-        payload = build_payload(path, "file")
+        payload = build_payload(path, "filein")
     else:
         directory = Path(args.dir).expanduser()
         latest = find_latest(directory, args.mode)

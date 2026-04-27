@@ -1,6 +1,6 @@
 ---
 name: news-briefing
-description: Read the latest freshNews or dailyFreshNews file in NewsOfCodex (or a user-provided directory), parse it into structured sections/items, and produce a not-too-long Chinese briefing that prioritizes importance and sensitivity without flattening everything into a timeline. Use --mode fresh (default) for current-period briefings, or --mode daily for same-day cumulative briefings. `daily` uses `dailyFreshNews_YYYY-MM-DD.md`. Use --file to bypass the finder and read a specific file directly.
+description: Read the latest freshNews or dailyFreshNews file in NewsOfCodex (or a user-provided directory), parse it into structured sections/items, and produce a Chinese briefing. Default to output mode `fileout`, which overwrites `NewsOfCodex/news_briefing/NewsBriefing.md`. Support source execution modes `fresh`, `daily`, and `filein`, plus output modes `fileout` and `chat`.
 ---
 
 # News Briefing
@@ -37,6 +37,21 @@ python3 /Users/x/.codex/skills/news-briefing/scripts/parse_freshnews.py --file "
 
 5. Produce a Chinese briefing that is not too long, but still selective and substantive.
 
+6. Output the final result.
+- Default output mode is `fileout`.
+- `fileout` means: write the full Markdown briefing to
+  `/Users/x/Library/Mobile Documents/iCloud~md~obsidian/Documents/Mind/NewsOfCodex/news_briefing/NewsBriefing.md`
+  and overwrite the previous file.
+- Use `chat` only if the user explicitly asks for direct chat output, current skill output, or no file writing.
+- In `fileout` mode, write the complete Markdown through:
+
+```bash
+python3 /Users/x/.codex/skills/news-briefing/scripts/write_briefing_file.py
+```
+
+- Pass the full Markdown body through stdin.
+- In `fileout` mode, reply in chat only with a short write receipt.
+
 ## Output Rules
 
 - All outputs must begin with this fixed header block before any news body:
@@ -44,18 +59,22 @@ python3 /Users/x/.codex/skills/news-briefing/scripts/parse_freshnews.py --file "
 ```markdown
 ## 简报信息
 - 执行模式：`fresh`
+- 输出模式：`fileout`
 - 使用文件：`2026-04-27-00-00_freshNews.md`
 - 执行时间：`4月27日 0:39`
 ```
 
 - Header field rules:
-  - `执行模式` must be `fresh`, `daily`, or `file`
+  - `执行模式` must be `fresh`, `daily`, or `filein`
+  - `输出模式` must be `fileout` or `chat`
   - `使用文件` must be file name only, never the full path
   - if there is no actual file name because the user pasted content inline, `使用文件` must be `inline-content`
   - `执行时间` must use local `Asia/Shanghai` time in `M月D日 H:mm`
 - Use finder-provided `mode`, `file_name`, and `execution_time` when available.
-- Fallback rule: if the user directly provides a file without finder payload, set `执行模式` to `file`, use the provided file name, and generate `执行时间` from the current local `Asia/Shanghai` time.
-- Pasted-content fallback: if the user only pastes content and no file name is available, set `执行模式` to `file`, set `使用文件` to `inline-content`, and generate `执行时间` from the current local `Asia/Shanghai` time.
+- Default output mode is `fileout`; switch to `chat` only when the user explicitly asks for chat output.
+- Fallback rule: if the user directly provides a file without finder payload, set `执行模式` to `filein`, use the provided file name, and generate `执行时间` from the current local `Asia/Shanghai` time.
+- Pasted-content fallback: if the user only pastes content and no file name is available, set `执行模式` to `filein`, set `使用文件` to `inline-content`, and generate `执行时间` from the current local `Asia/Shanghai` time.
+- In `fileout` mode, the full Markdown must be written to the fixed `NewsBriefing.md` path.
 - Ground the summary in parsed `title`, `time`, `url`, `section`, and optional quoted text only.
 - Do not invent facts that are not supported by the file.
 - Prefer merging duplicate or closely related items across sections into one higher-level point.
@@ -88,6 +107,7 @@ Use this structure unless the user asks for another format:
 ```markdown
 ## 简报信息
 - 执行模式：`fresh`
+- 输出模式：`fileout`
 - 使用文件：`2026-04-27-00-00_freshNews.md`
 - 执行时间：`4月27日 0:39`
 
@@ -108,6 +128,7 @@ Use this structure unless the user asks for another format:
 ```
 
 - The fixed header is mandatory and must appear before `## 当前关注`.
+- `输出模式` must always appear in the header.
 - `当前关注` 不是“今日总结”，而是“这一个 freshNews 时间窗口里最值得先看什么”。
 - 地缘类新闻若属于本轮最值得先看的高优先级事项，可进入 `当前关注`；其余可归入 `地缘政治`。
 - 如果本轮文件里地缘政治、市场或科技不构成独立板块，可以省略对应区块，直接并入 `当前关注` 或 `其余简报`。
